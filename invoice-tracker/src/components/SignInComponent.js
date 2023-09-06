@@ -12,7 +12,7 @@ const Container = styled.div`
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 600px;
+  width: 800px;
   margin-top: 50px;
 `;
 
@@ -65,9 +65,15 @@ const SubmitButton = styled.input`
   align-items: center;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-weight: 600;
+  font-weight: 800;
   cursor: pointer;
   margin-top: 40px;
+`;
+
+const ErrorLabel = styled.label`
+  margin-top: 10px;
+  color: #ff0000;
+  font-size: 24px;
 `;
 
 class SignInComponent extends React.Component {
@@ -77,6 +83,8 @@ class SignInComponent extends React.Component {
       email: '',
       password: '',
       rememberMe: false,
+      emailError: '',
+      passwordError: '',
     };
 
     this.handleEmailInputChange = this.handleEmailInputChange.bind( this );
@@ -86,16 +94,32 @@ class SignInComponent extends React.Component {
   }
 
   handleEmailInputChange ( event ) {
-    this.setState( { email: event.target.value } );
+    this.setState( { email: event.target.value, emailError: '' } );
   }
   handlePasswordInputChange ( event ) {
-    this.setState( { password: event.target.value } );
+    this.setState( { password: event.target.value, passwordError: '' } );
   }
   handleRememberMeCheckboxChange ( event ) {
     this.setState( { rememberMe: event.target.checked } );
   }
   handleSubmit ( event ) {
-    alert( JSON.stringify( this.state ) );
+    let emailError = '';
+    let passwordError = '';
+
+    if ( !this.state.email) {
+      emailError = 'Email is required.';
+    }
+    if ( !this.state.password ) {
+      passwordError = 'Password is required.';
+    } else if ( this.state.password.length < 8 ) {
+      passwordError = 'Password must be at least 8 characters.';
+    }
+    if ( emailError || passwordError ) {
+      this.setState( { emailError, passwordError } );
+      event.preventDefault();
+    } else {
+      alert( JSON.stringify( this.state ) );
+    }
   }
 
   render () {
@@ -107,9 +131,11 @@ class SignInComponent extends React.Component {
             <Label>Email</Label>
             <EmailInput type="email" value={ this.state.email }
               onChange={ this.handleEmailInputChange } />
+            {this.state.emailError && <ErrorLabel>{this.state.emailError}</ErrorLabel>}
             <Label>Password</Label>
             <PasswordInput type='password' value={ this.state.password }
               onChange={ this.handlePasswordInputChange } />
+            {this.state.passwordError && <ErrorLabel>{this.state.passwordError}</ErrorLabel>}
             <CheckboxContainer>
               <CheckboxLabel>Remember me</CheckboxLabel>
               <RememberMeCheckbox type="checkbox"
