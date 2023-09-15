@@ -6,6 +6,7 @@ import {
   Form,
   ErrorMessage,
 } from 'formik';
+import * as Yup from 'yup';
 
 const Container = styled.div`
   display: flex;
@@ -82,11 +83,30 @@ const ErrorLabel = styled.label`
   font-size: 24px;
 `;
 
+const SignupSchema = Yup.object().shape( {
+  email: Yup.string()
+    .email( 'Invalid email address' )
+    .required( 'Required' ),
+} );
+
+const PasswordSchema = Yup.object().shape( {
+  password: Yup.string()
+    .required( 'Required' )
+    .test( 'len', 'Password is weak', ( value ) => value.length >= 8 )
+    .test( 'len', 'Password is very weak', ( value ) => value.length > 5 )
+    .test( 'password-uppercase', 'Password must contain at least one uppercase letter', ( value ) => /[A-Z]/.test( value ) )
+    .test( 'password-lowercase', 'Password must contain at least one lowercase letter', ( value ) => /[a-z]/.test( value ) )
+    .test( 'password-number', 'Password must contain at least one number', ( value ) => /[0-9]/.test( value ) )
+    .test( 'password-special-character', 'Password must contain at least one special character', ( value ) => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test( value ) ),
+  confirmPassword: Yup.string()
+    .oneOf( [ Yup.ref( 'password' ), null ], 'Passwords must match' )
+} );
+
 class SignInComponent extends React.Component {
   constructor ( props ) {
     super( props );
     this.handleSubmit = this.handleSubmit.bind( this );
-    this.handleValidation = this.handleValidation.bind( this );
+    this.validatePassword = this.validatePassword.bind( this );
   }
 
   handleSubmit ( values, actions ) {
@@ -96,25 +116,17 @@ class SignInComponent extends React.Component {
         alert(JSON.stringify(values));
       }, 5000 );
     } );
-  }
+  };
 
-  handleValidation ( values ) {
-    const errors = {};
-
-    if ( !values.email ) {
-      errors.email = 'Required';
-    } else if ( !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test( values.email ) ) {
-      errors.email = 'Invalid email address';
+  validatePassword ( value ) {
+    let error = undefined;
+    try {
+      PasswordSchema.validateSync( { password: value } );
+    } catch ( err ) {
+      error = err.errors[0];
     }
-
-    if ( !values.password ) {
-      errors.password = 'Required'; // Use 'Required' for consistency
-    } else if ( values.password.length < 8 ) {
-      errors.password = 'Password should be at least 8 characters long';
-    }
-
-    return errors;
-  }
+    return error;
+  };
 
   render () {
     return (
@@ -126,9 +138,9 @@ class SignInComponent extends React.Component {
               email: '',
               password: '',
               rememberMe: false,
-            }}
-            validate={this.handleValidation}
-            onSubmit={this.handleSubmit}
+            } }
+            validationSchema={SignupSchema}
+            onSubmit={ this.handleSubmit }
           >
             { props => (
               <SignInForm>
@@ -147,8 +159,19 @@ class SignInComponent extends React.Component {
                   type="password"
                   name="password"
                   placeholder="Enter Password"
+                  validate={ this.validatePassword }
                 />
                 <ErrorMessage name="password">
+                  {error => <ErrorLabel>{error}</ErrorLabel>}
+                </ErrorMessage>
+                <Label>{ "Confirm Password" }</Label>
+                <PasswordField
+                  type="password"
+                  name="confirmPassword"
+                  placeholder="Enter Password"
+                  validate = {this.validatePassword}
+                />
+                <ErrorMessage name="confirmPassword">
                   {error => <ErrorLabel>{error}</ErrorLabel>}
                 </ErrorMessage>
                 <CheckboxContainer>
@@ -172,4 +195,4 @@ class SignInComponent extends React.Component {
   }
 }
 
-export default SignInComponent;
+export   default SignInComponent;
