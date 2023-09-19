@@ -9,7 +9,7 @@ const InputElement = () => {
         type="text"
         placeholder="Enter Text"
         onChange={
-          (e) => {
+          ( e ) => {
             setInputText( e.target.value );
             setHistoryList( [ ...historyList, e.target.value ] );
           }
@@ -24,12 +24,12 @@ const InputElement = () => {
               <div>
                 { item }
               </div>
-            )
-          })
+            );
+          } )
         }
       </ul>
     </div>
-  )
-}
+  );
+};
 
 export default InputElement;
