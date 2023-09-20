@@ -1,10 +1,29 @@
-import React from 'react';
-import ImgStyles from './ImgStyles';
+import React, { useRef } from 'react';
 
-const ImageToggleOnMouseOver = ({primaryImg}) => {
+const ImageToggleOnMouseOver = ( { primaryImg, secondaryImg } ) => {
+  const imageRef = useRef( null );
+
+  const handleMouseOver = () => {
+    if ( imageRef.current ) {
+      imageRef.current.src = secondaryImg;
+    }
+  };
+
+  const handleMouseOut = () => {
+    if ( imageRef.current ) {
+      imageRef.current.src = primaryImg;
+    }
+  };
+
+
   return (
-    <ImgStyles src={ primaryImg } alt="" />
-  )
-}
+    <img
+      height="200px"
+      onMouseOver={ handleMouseOver }
+      onMouseOut={ handleMouseOut }
+      src={ primaryImg }
+      alt="" ref={ imageRef }/>
+  );
+};
 
 export default ImageToggleOnMouseOver;
