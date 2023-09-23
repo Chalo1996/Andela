@@ -18,7 +18,6 @@ const ImageToggleOnMouseOver = ( { primaryImg, secondaryImg } ) => {
 
   return (
     <img
-      height="200px"
       onMouseOver={ handleMouseOver }
       onMouseOut={ handleMouseOut }
       src={ primaryImg }

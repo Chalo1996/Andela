@@ -5,12 +5,12 @@ const ImageChangeOnMouseOver = () => {
   return (
     <div>
       <ImageToggleOnMouseOver
-        primaryImg="/static/speakers/bw/beautiful-girl1.jpg"
-        secondaryImg="/static/speakers/beautiful-girl1.jpg" />
+        primaryImg="/static/speakers/bw/Speaker-10803.jpg"
+        secondaryImg="/static/speakers/Speaker-10803.jpg" />
       &nbsp; &nbsp; &nbsp;
       <ImageToggleOnMouseOver
-        primaryImg="/static/speakers/bw/sunflower-5012155.jpg"
-        secondaryImg="/static/speakers/sunflower-5012155.jpg" />
+        primaryImg="/static/speakers/bw/Speaker-1124.jpg"
+        secondaryImg="/static/speakers/Speaker-1124.jpg" />
     </div>
   );
 };
